@@ -12,7 +12,7 @@ This project asks whether winning short rallies (0-4 shots) is more decisive tha
 
 ## Data sources
 
-The main source used for this project was rally analysis data and general match information scraped via the Infotennis Github package (https://github.com/glad94/infotennis), which retrieves data from ATP's public Infosys-powered stats API. 
+The main source used for this project was rally analysis data and general match information scraped via the Infotennis package hosted on GitHub (https://github.com/glad94/infotennis), which retrieves data from ATP's public Infosys-powered stats API. 
 
 ## How to reproduce
 
@@ -27,7 +27,7 @@ The notebooks should be run in order from `NB01-Data-Collection.ipynb` to `NB02-
     pip install plotly pandas
     ```
 
-3. Clone the Infotennis repository to the local machine and install with pip:
+3. Clone the Infotennis repository to the local machine and install:
 
     ```
     $ git clone https://github.com/glad94/infotennis
