@@ -1,4 +1,4 @@
-# ME204 Final Project: How Deterministic Is Rally Length for Winning Matches? Evidence from the ATP Finals
+# ME204 Final Project: The Tradeoff Between Winners and Errors in Professional Tennis
 
 
 | GitHub username                           | LSE ID            |
@@ -8,33 +8,23 @@
 
 ## Overview
 
-This project asks whether winning short rallies (0-4 shots) is more decisive than winning long rallies (9+ shots), using rally analysis data from the 2022-2024 ATP finals. Rally length can be used to infer things about playstyle and risk tolerance, so it offers a way to test whether one way of point-winning matters more than the other.
+This project asks whether reducing unforced errors or hitting more winners is more decisive for winning a tennis match. Winners and unforced errors are two sides of the same coin, and represent two different playing philosophies: aggression vs consistency. So comparing the two can serve as a proxy for identifying whether taking on additional risk pays off at the top level.
 
 ## Data sources
 
-The main source used for this project was rally analysis data and general match information scraped via the Infotennis package hosted on GitHub (https://github.com/glad94/infotennis), which retrieves data from ATP's public Infosys-powered stats API. 
+The main source used for this project was [API Tennis](https://api-tennis.com/) using the `get_fixtures` endpoint, that returns per-player match statistics (winners, unforced errors, aces, serve percentage etc.) along with general match statistics and context. 
+
+An API key is required, and can be obtained through the free 2 week trial period that API Tennis offers (no credit card details required). The API key must be stored in `.env` as `API_KEY`.
+
 
 ## How to reproduce
 
-[Tell your reader how to get keys, which python commands to run and any other things they need to know when replicating your work (imagine they are people with similar technical skills as yours)]
+The notebooks should be run in order from `NB01-Data-Collection.ipynb` to `NB02-Data-Transformation.ipynb` to `NB03-tynelee-Data-Analysis.ipynb`, and:
 
-The notebooks should be run in order from `NB01-Data-Collection.ipynb` to `NB02-Data-Transformation.ipynb` to `NB03-tynelee-Data-Analysis.ipynb`, and the following packages must be installed:
-
-1. Make sure you have python 3+ installed
+1. Make sure python 3+ is installed
 2. Install these packages on your python environment:
 
     ```shell
-    pip install plotly pandas
+    pip install python-dotenv requests pandas plotly
     ```
-
-3. Clone the Infotennis repository to the local machine and install:
-
-    ```
-    $ git clone https://github.com/glad94/infotennis
-    $ cd infotennis
-    $ pip install .
-    ```
-
-
-***SQL?
 
