@@ -8,11 +8,11 @@
 
 ## Overview
 
-This project asks whether winning short rallies (0-4 shots) is more decisive than winning long rallies (9+ shots), using rally analysis data from the 2022-2024 ATP finals. Rally length can be used to infer things about playing style and risk tolerance, so it offers a way to test whether one way of point-winning matters more than the other.
+This project asks whether winning short rallies (0-4 shots) is more decisive than winning long rallies (9+ shots), using rally analysis data from the 2022-2024 ATP finals. Rally length can be used to infer things about playstyle and risk tolerance, so it offers a way to test whether one way of point-winning matters more than the other.
 
 ## Data sources
 
-The main source used for this project was rally analysis data and general match information scraped via the Infotennis Github (https://github.com/glad94/infotennis) package, which retrieves data from ATP's public Infosys-powered stats API. 
+The main source used for this project was rally analysis data and general match information scraped via the Infotennis Github package (https://github.com/glad94/infotennis), which retrieves data from ATP's public Infosys-powered stats API. 
 
 ## How to reproduce
 
