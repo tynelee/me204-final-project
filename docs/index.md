@@ -5,4 +5,4 @@
 - [Your GitHub username](./your-github-username.md)
 
 
-![Alt text](./australian-open-2025-prize-money.jpg "optional image title")
+![text 1](./australian-open-2025-prize-money.jpg "text 2")
