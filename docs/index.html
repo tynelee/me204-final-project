@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winners or Fewer Errors? | ME204 Final Project</title>
+<meta name="description" content="Does hitting more winners or making fewer unforced errors win Grand Slam tennis matches? A data investigation using 712 men's singles matches from the 2026 Grand Slams.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF6EF;
+    --paper-dim: #F1EBDF;
+    --ink: #211E1A;
+    --ink-soft: #56504A;
+    --line: #DDD4C4;
+    --amber: #B9782D;
+    --amber-soft: #E9CDA1;
+    --teal: #276B68;
+    --teal-soft: #BFDAD8;
+    --hard: #1F5C8B;
+    --clay: #A0472C;
+    --grass: #2F6B3F;
+    --max-w: 760px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--amber-soft); }
+
+  a { color: var(--hard); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--clay); }
+
+  h1, h2, h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0 0 0.4em 0;
+  }
+
+  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+  .wide { max-width: 920px; }
+
+  /* ---------- Eyebrow / section labels ---------- */
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+  .eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 2px;
+    background: var(--ink-soft);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 90px 0 60px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .kicker {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: clamp(2.1rem, 5vw, 3.3rem);
+    max-width: 12ch;
+  }
+  .hero .dek {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ink-soft);
+    max-width: 34ch;
+    margin-top: 18px;
+  }
+  .byline {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Court rail: the signature element ---------- */
+  .court-rail {
+    height: 10px;
+    display: flex;
+    margin: 34px 0 0;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+  }
+  .court-rail span { flex: 1; }
+  .court-rail .c-hard { background: var(--hard); }
+  .court-rail .c-clay { background: var(--clay); }
+  .court-rail .c-grass { background: var(--grass); }
+
+  section { padding: 58px 0; }
+  section + section { border-top: 1px solid var(--line); }
+
+  p { margin: 0 0 1.05em 0; }
+  p.lead {
+    font-family: 'Fraunces', serif;
+    font-size: 1.22rem;
+    line-height: 1.5;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 36px;
+    margin: 30px 0 6px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    font-family: 'Fraunces', serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+  }
+  .stat small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* ---------- Figures ---------- */
+  figure {
+    margin: 34px 0;
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 28px 20px;
+  }
+  figure .fig-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin-bottom: 4px;
+  }
+  figure .fig-sub {
+    font-size: 0.87rem;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  figcaption {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* diverging tug-of-war bar */
+  .tug { margin: 18px 0; }
+  .tug-row { display: flex; align-items: center; gap: 14px; margin: 10px 0; }
+  .tug-label { width: 108px; flex-shrink: 0; font-size: 0.85rem; font-weight: 600; text-align: right; }
+  .tug-track {
+    position: relative;
+    flex: 1;
+    height: 26px;
+    background: linear-gradient(to right, transparent 49.9%, var(--line) 50%, var(--line) 50.1%, transparent 50.2%);
+  }
+  .tug-bar { position: absolute; top: 3px; height: 20px; border-radius: 3px; }
+  .tug-bar.amber { background: var(--amber); right: 50%; }
+  .tug-bar.teal  { background: var(--teal); left: 50%; }
+  .tug-val { position: absolute; top: 4px; font-size: 0.72rem; font-weight: 700; color: white; padding: 0 6px; line-height: 18px; }
+  .ball {
+    position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border-radius: 50%;
+    background: #D9CE3F; border: 1px solid #b7ae2b; transform: translate(-50%,-50%);
+  }
+  .legend { display: flex; gap: 22px; font-size: 0.8rem; margin-top: 6px; color: var(--ink-soft); }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+  blockquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    border-left: 3px solid var(--amber);
+    padding-left: 22px;
+    margin: 30px 0;
+    color: var(--ink);
+  }
+
+  .callout {
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal);
+    border-radius: 6px;
+    padding: 18px 22px;
+    font-size: 0.94rem;
+    margin: 26px 0;
+  }
+  .callout strong { color: var(--teal); }
+
+  details {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin: 12px 0;
+    background: var(--paper-dim);
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  details p { margin-top: 12px; font-size: 0.92rem; color: var(--ink-soft); }
+
+  footer {
+    padding: 50px 0 80px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  footer a { color: var(--ink-soft); }
+  footer .links { margin-top: 8px; }
+  footer .links a { margin-right: 18px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 60px 0 40px; }
+    section { padding: 40px 0; }
+    .tug-label { width: 78px; font-size: 0.76rem; }
+    .stat-row { gap: 22px; }
+    .stat { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">ME204 Final Project · 2026</div>
+    <h1>Winners, or fewer errors?</h1>
+    <p class="dek">What actually separates the winner from the loser in a Grand Slam match &mdash; and does it depend on where they're playing.</p>
+    <div class="court-rail" aria-hidden="true">
+      <span class="c-hard"></span><span class="c-clay"></span><span class="c-grass"></span>
+    </div>
+    <p class="byline">An investigation using 712 men's singles matches from the 2026 Australian Open, Roland-Garros and Wimbledon &middot; by tynelee</p>
+  </div>
+</header>
+
+<section id="question">
+  <div class="wrap">
+    <div class="eyebrow">The question</div>
+    <p class="lead">Tennis rewards two opposite instincts. You can go for the lines and hit outright winners, or you can play it safer and simply wait for your opponent to make the mistake. Which philosophy actually wins matches: aggression, or consistency?</p>
+    <p>Winners and unforced errors are two sides of the same coin. A player going for more winners will naturally commit more errors chasing them; a player playing it safe will hit fewer winners in exchange for a tidier scoreline. Comparing how much each margin swings toward the match winner is a reasonable proxy for asking whether taking on risk pays off at the top of the men's game.</p>
+    <p>To find out, I collected match statistics for every completed men's singles match at the three 2026 Grand Slams played so far &mdash; the Australian Open, Roland-Garros, and Wimbledon &mdash; using the API-Tennis <code>get_fixtures</code> endpoint. Restricting to Grand Slams keeps player quality and match formats consistent, while still covering all three major playing surfaces.</p>
+  </div>
+</section>
+
+<section id="finding1">
+  <div class="wrap">
+    <div class="eyebrow">Finding one</div>
+    <h2>Across all matches, it's closer than you'd think</h2>
+    <p>For every match, I calculated how many more winners the eventual winner hit than their opponent, and separately, how many fewer unforced errors they made. If aggression were clearly the winning formula, the winners margin would dwarf the errors margin. It doesn't.</p>
+
+    <div class="stat-row">
+      <div class="stat">+7<small>median extra winners<br>by the match winner</small></div>
+      <div class="stat">+6<small>median fewer errors<br>by the match winner</small></div>
+    </div>
+
+    <figure>
+      <div class="fig-title">Extra winners edge out fewer errors, but only just</div>
+      <div class="fig-sub">Median margin held by the match winner, across all 712 matches</div>
+      <div class="tug">
+        <div class="tug-row">
+          <div class="tug-label">Winners</div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:24.5%"><span class="tug-val" style="right:2px;">+7</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label">Fewer errors</div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:21%"><span class="tug-val" style="left:2px;">+6</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--amber)"></span>Extra winners hit</span>
+        <span><span class="swatch" style="background:var(--teal)"></span>Fewer unforced errors made</span>
+      </div>
+      <figcaption>Both distributions are wide and overlap heavily match to match, so a one-point median gap should be read as a mild tilt, not a rule. Winning a Grand Slam match typically requires some combination of both styles, not a commitment to one.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="finding2">
+  <div class="wrap">
+    <div class="eyebrow">Finding two</div>
+    <h2>The surface changes the story</h2>
+    <p>Surface is the variable most unique to tennis. Grass, at Wimbledon, is fast and low-bouncing, rewarding big serves and aggressive shot-making. Clay, at Roland-Garros, is slow and high-bouncing, extending rallies and rewarding patience. The hard courts of the Australian Open sit in between. Splitting the same comparison by tournament shows the pattern isn't fixed &mdash; it bends toward whichever style the surface actually rewards.</p>
+
+    <figure>
+      <div class="fig-title">Clay is the only surface where fewer errors beats more winners</div>
+      <div class="fig-sub">Median margin held by the match winner, by tournament</div>
+      <div class="tug">
+        <div class="tug-row">
+          <div class="tug-label">Australian Open<br><span style="font-weight:400;color:var(--ink-soft)">(hard court)</span></div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:28%"><span class="tug-val" style="right:2px;">+8</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label"></div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:24.5%"><span class="tug-val" style="left:2px;">+7</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row" style="margin-top:22px;">
+          <div class="tug-label">Roland-Garros<br><span style="font-weight:400;color:var(--ink-soft)">(clay)</span></div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:17.5%"><span class="tug-val" style="right:2px;">+5</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label"></div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:21%"><span class="tug-val" style="left:2px;">+6</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row" style="margin-top:22px;">
+          <div class="tug-label">Wimbledon<br><span style="font-weight:400;color:var(--ink-soft)">(grass)</span></div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:24.5%"><span class="tug-val" style="right:2px;">+7</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label"></div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:21%"><span class="tug-val" style="left:2px;">+6</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--amber)"></span>Extra winners hit</span>
+        <span><span class="swatch" style="background:var(--teal)"></span>Fewer unforced errors made</span>
+      </div>
+      <figcaption>The Australian Open and Wimbledon share the same shape as the overall picture, with the winners margin ahead of the errors margin. Roland-Garros flips it: the errors margin edges ahead, the only tournament where playing it safe out-predicts going for winners. The errors margin on clay also has the widest spread of the three surfaces &mdash; longer rallies mean more time for either a mistake or a moment of fatigue to decide the point.</figcaption>
+    </figure>
+
+    <p>This lines up with what clay is supposed to do to a match. Slower bounces mean rallies run longer, which rewards the player still standing at the end of a long exchange more than the player who ended it early with a clean winner.</p>
+  </div>
+</section>
+
+<section id="finding3">
+  <div class="wrap">
+    <div class="eyebrow">Finding three</div>
+    <h2>Take away the serve, and the two styles look almost identical</h2>
+    <p>There's a catch in the numbers above. Raw "winners" totals include aces, and raw "unforced errors" totals include double faults &mdash; both of which measure serving quality, not rally risk-taking. An ace is a winner you hit without playing a single rally shot. To isolate the actual aggression-versus-consistency trade-off, I recalculated both margins with aces and double faults stripped out, leaving only what happened once the ball was in play.</p>
+
+    <figure>
+      <div class="fig-title">The winners margin shrinks once serving is taken out of the picture</div>
+      <div class="fig-sub">Median margin held by the match winner, with and without serve statistics</div>
+      <div class="tug">
+        <div class="tug-row">
+          <div class="tug-label">All shots</div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:24.5%"><span class="tug-val" style="right:2px;">+7</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row" style="margin-bottom:22px;">
+          <div class="tug-label"></div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:21%"><span class="tug-val" style="left:2px;">+6</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label">Rally shots only</div>
+          <div class="tug-track">
+            <div class="tug-bar amber" style="width:17.5%"><span class="tug-val" style="right:2px;">+5</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+        <div class="tug-row">
+          <div class="tug-label"></div>
+          <div class="tug-track">
+            <div class="tug-bar teal" style="width:17.5%"><span class="tug-val" style="left:2px;">+5</span></div>
+            <div class="ball"></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--amber)"></span>Extra winners hit</span>
+        <span><span class="swatch" style="background:var(--teal)"></span>Fewer unforced errors made</span>
+      </div>
+      <figcaption>Removing aces and double faults drops the winners margin from +7 to +5, and narrows its spread considerably. The errors margin barely moves. Once the serve is accounted for, the two playing styles land in almost exactly the same place.</figcaption>
+    </figure>
+
+    <blockquote>Once the serve is stripped out, most of the "aggression advantage" turns out to be a serving advantage.</blockquote>
+
+    <p>This is the most useful finding of the three. It suggests that a meaningful part of what looks like an edge for aggressive players is really an edge for good servers &mdash; two things that correlate but aren't the same skill. Once you remove serving from the picture, hitting more winners in the rally and making fewer unforced errors in the rally come out close to tied.</p>
+  </div>
+</section>
+
+<section id="conclusion">
+  <div class="wrap">
+    <div class="eyebrow">So, which wins matches?</div>
+    <h2>Both styles can win. Serving well matters more than either.</h2>
+    <p>Across all 712 matches, the winner typically holds a slightly larger margin in extra winners hit (+7) than in errors avoided (+6), but the overlap between the two distributions is too wide to call this decisive on its own. Split by surface, the pattern behaves the way anyone who follows tennis would expect: clay rewards fewer errors over the winners tally, while the faster hard and grass courts tip slightly the other way.</p>
+    <p>The most telling result comes from separating serve statistics out of the picture entirely. Once aces and double faults are removed, the winners margin collapses toward the errors margin, and the two nearly match. That points to serving, not raw risk-taking in the rally, as the larger factor behind the "aggression wins" narrative.</p>
+    <div class="callout">
+      <strong>In short:</strong> both playing philosophies can win a Grand Slam match. The clearer differentiator, at least in this dataset, is how well a player serves &mdash; not whether they choose to attack or play it safe once the point is underway.
+    </div>
+
+    <details>
+      <summary>Limitations of this analysis</summary>
+      <p>This is associative, not causal. Tennis outcomes are shaped by matchups, tactics, fitness, and conditions that this dataset can't capture, so a margin difference between winners and losers doesn't prove that one style causes wins.</p>
+      <p>The dataset covers men's singles at three 2026 Grand Slams only. Results may not generalise to the WTA tour, to lower-tier events, or to earlier seasons with different player fields.</p>
+      <p>16 matches with pre-match withdrawals were excluded for having no recorded statistics, which slightly reduces the sample from the full draw size but shouldn't bias the comparison, since these matches never produced any rally play to measure.</p>
+      <p>The full working, including every chart and the code behind it, is available in <code>NB03-tynelee-Data-Analysis.ipynb</code> in the project repository.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Data collected from the <a href="https://api-tennis.com/" target="_blank" rel="noopener">API-Tennis</a> <code>get_fixtures</code> endpoint. Full methodology, raw data handling, and the complete set of exploratory charts are documented in the project's notebooks.</p>
+    <div class="links">
+      <a href="../README.md">Project README</a>
+      <a href="index.md">All project pages</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
