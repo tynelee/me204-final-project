@@ -18,7 +18,9 @@ An API key is required, and can be obtained through the free 2 week trial period
 
 Begin by replacing <YOUR_API_KEY_HERE> in the `.env.example` with your own API key from API Tennis. Then rename the file to `.env`. 
 
-The notebooks should be run in order from `NB01-Data-Collection.ipynb` to `NB02-Data-Transformation.ipynb` to `NB03-tynelee-Data-Analysis.ipynb`, and:
+The notebooks should be run in order from `NB01-Data-Collection.ipynb` (read API and write `data/raw/dump.json`) to `NB02-Data-Transformation.ipynb` (read `data/raw/dump.json` and process into `data/processed/cleaned.csv`) to `NB03-tynelee-Data-Analysis.ipynb` (read `data/processed/cleaned.csv` and produce plots and analysis).
+
+Ensure the following:
 
 1. Make sure python 3+ is installed
 2. Install these packages on your python environment:
