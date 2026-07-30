@@ -22,6 +22,6 @@ The notebooks should be run in order from `NB01-Data-Collection.ipynb` to `NB02-
 2. Install these packages on your python environment:
 
     ```shell
-    pip install python-dotenv requests pandas plotly
+    pip install python-dotenv requests pandas plotly kaleido
     ```
 
