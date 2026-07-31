@@ -29,11 +29,3 @@ Ensure the following:
     pip install python-dotenv requests pandas plotly kaleido
     ```
 
-## Findings
-
-Across all 712 matches, players who won typically had a slight edge in extra winners hit (7 more than their opponent) over a reduction in errors (6 less than their opponent), but neither style shows a significant edge over the other (`NB03-tynelee-Data-Analysis.ipynb` fig1).
-
-Splitting by surface shows a predictable shift, on hard courts and grass, aggression is rewarded, while this is tempered on clay, the surface of patience and grit (`NB03-tynelee-Data-Analysis.ipynb` fig2).
-
-The most notable finding comes when serve statistics are removed, to isolate rally play from raw serving. The winners margin becomes noticeably compressed, suggesting that a meaningful amount of reward for being aggressive is really an advantage of serving, not rally-based risk taking. Once serving was accounted for, the two playing styles looked a lot more balanced (`NB03-tynelee-Data-Analysis.ipynb` fig1_rally & fig2_rally).
-
